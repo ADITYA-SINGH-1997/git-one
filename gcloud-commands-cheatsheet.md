@@ -8,6 +8,8 @@
 - [Google Kubernetes Engine (GKE)](#google-kubernetes-engine-gke)
 - [App Engine](#app-engine)
 - [Cloud SQL](#cloud-sql)
+- [Deployment Manager](#deployment-manager)
+- [BigQuery](#bigquery)
 - [Networking](#networking)
 - [Billing & Projects](#billing--projects)
 - [Monitoring & Logging](#monitoring--logging)
@@ -476,6 +478,364 @@ gcloud sql export sql [INSTANCE_NAME] \
 gcloud sql import sql [INSTANCE_NAME] \
   gs://[BUCKET_NAME]/[FILE] \
   --database=[DATABASE_NAME]
+```
+
+---
+
+## Deployment Manager
+
+### Deployment Management
+```bash
+# List all deployments
+gcloud deployment-manager deployments list
+
+# Create a deployment
+gcloud deployment-manager deployments create [DEPLOYMENT_NAME] \
+  --config=[CONFIG_FILE]
+
+# Update a deployment
+gcloud deployment-manager deployments update [DEPLOYMENT_NAME] \
+  --config=[CONFIG_FILE]
+
+# Delete a deployment
+gcloud deployment-manager deployments delete [DEPLOYMENT_NAME]
+
+# Delete deployment and keep resources
+gcloud deployment-manager deployments delete [DEPLOYMENT_NAME] \
+  --delete-policy=ABANDON
+
+# Describe a deployment
+gcloud deployment-manager deployments describe [DEPLOYMENT_NAME]
+
+# Preview a deployment
+gcloud deployment-manager deployments create [DEPLOYMENT_NAME] \
+  --config=[CONFIG_FILE] --preview
+
+# Stop a deployment preview
+gcloud deployment-manager deployments stop [DEPLOYMENT_NAME]
+
+# Cancel a deployment preview
+gcloud deployment-manager deployments cancel-preview [DEPLOYMENT_NAME]
+```
+
+### Deployment Operations
+```bash
+# List operations for a deployment
+gcloud deployment-manager operations list
+
+# Describe an operation
+gcloud deployment-manager operations describe [OPERATION_NAME]
+
+# Wait for operation to complete
+gcloud deployment-manager operations wait [OPERATION_NAME]
+```
+
+### Resources
+```bash
+# List resources in a deployment
+gcloud deployment-manager resources list \
+  --deployment=[DEPLOYMENT_NAME]
+
+# Describe a resource
+gcloud deployment-manager resources describe [RESOURCE_NAME] \
+  --deployment=[DEPLOYMENT_NAME]
+```
+
+### Templates & Types
+```bash
+# List types
+gcloud deployment-manager types list
+
+# Describe a type
+gcloud deployment-manager types describe [TYPE_NAME]
+
+# Create a type provider
+gcloud deployment-manager type-providers create [PROVIDER_NAME] \
+  --descriptor-url=[URL] \
+  --api-options-file=[FILE]
+
+# List type providers
+gcloud deployment-manager type-providers list
+
+# Delete a type provider
+gcloud deployment-manager type-providers delete [PROVIDER_NAME]
+```
+
+### Manifests
+```bash
+# List manifests for a deployment
+gcloud deployment-manager manifests list \
+  --deployment=[DEPLOYMENT_NAME]
+
+# Describe a manifest
+gcloud deployment-manager manifests describe [MANIFEST_NAME] \
+  --deployment=[DEPLOYMENT_NAME]
+```
+
+---
+
+## BigQuery
+
+### Dataset Management
+```bash
+# List datasets
+bq ls
+
+# List datasets in a project
+bq ls --project_id=[PROJECT_ID]
+
+# Create a dataset
+bq mk [DATASET_NAME]
+
+# Create a dataset with location
+bq mk --location=[LOCATION] [DATASET_NAME]
+
+# Create a dataset in a specific project
+bq mk --project_id=[PROJECT_ID] [DATASET_NAME]
+
+# Delete a dataset
+bq rm -r [DATASET_NAME]
+
+# Delete a dataset without prompting
+bq rm -r -f [DATASET_NAME]
+
+# Show dataset information
+bq show [DATASET_NAME]
+
+# Update dataset description
+bq update --description="[DESCRIPTION]" [DATASET_NAME]
+
+# Set dataset expiration
+bq update --default_table_expiration=[SECONDS] [DATASET_NAME]
+```
+
+### Table Management
+```bash
+# List tables in a dataset
+bq ls [DATASET_NAME]
+
+# Create a table with schema
+bq mk --table [DATASET_NAME].[TABLE_NAME] [SCHEMA]
+
+# Create a table from schema file
+bq mk --table [DATASET_NAME].[TABLE_NAME] [SCHEMA_FILE]
+
+# Delete a table
+bq rm [DATASET_NAME].[TABLE_NAME]
+
+# Delete a table without prompting
+bq rm -f [DATASET_NAME].[TABLE_NAME]
+
+# Show table information
+bq show [DATASET_NAME].[TABLE_NAME]
+
+# Show table schema
+bq show --schema [DATASET_NAME].[TABLE_NAME]
+
+# Update table description
+bq update --description="[DESCRIPTION]" \
+  [DATASET_NAME].[TABLE_NAME]
+
+# Set table expiration
+bq update --expiration=[SECONDS] \
+  [DATASET_NAME].[TABLE_NAME]
+
+# Copy a table
+bq cp [SOURCE_DATASET].[SOURCE_TABLE] \
+  [DEST_DATASET].[DEST_TABLE]
+
+# Copy table across projects
+bq cp [PROJECT_ID]:[DATASET].[TABLE] \
+  [DEST_PROJECT_ID]:[DEST_DATASET].[DEST_TABLE]
+```
+
+### Querying Data
+```bash
+# Run a query
+bq query "[SQL_QUERY]"
+
+# Run a query with legacy SQL
+bq query --use_legacy_sql=true "[SQL_QUERY]"
+
+# Run a query with standard SQL
+bq query --use_legacy_sql=false "[SQL_QUERY]"
+
+# Run a query and save results to table
+bq query --destination_table=[DATASET].[TABLE] "[SQL_QUERY]"
+
+# Run a query without caching
+bq query --use_cache=false "[SQL_QUERY]"
+
+# Run a query from file
+bq query < [QUERY_FILE]
+
+# Run a dry run to estimate query cost
+bq query --dry_run "[SQL_QUERY]"
+
+# Run a query with parameters
+bq query --parameter="[PARAM_NAME]:[TYPE]:[VALUE]" "[SQL_QUERY]"
+
+# Set maximum bytes billed
+bq query --maximum_bytes_billed=[BYTES] "[SQL_QUERY]"
+```
+
+### Data Loading
+```bash
+# Load data from CSV
+bq load [DATASET].[TABLE] [SOURCE_FILE] [SCHEMA]
+
+# Load data with autodetect schema
+bq load --autodetect [DATASET].[TABLE] [SOURCE_FILE]
+
+# Load data from Cloud Storage
+bq load [DATASET].[TABLE] gs://[BUCKET]/[FILE] [SCHEMA]
+
+# Load data with source format
+bq load --source_format=CSV [DATASET].[TABLE] [SOURCE_FILE]
+
+# Load JSON data
+bq load --source_format=NEWLINE_DELIMITED_JSON \
+  [DATASET].[TABLE] [SOURCE_FILE] [SCHEMA]
+
+# Load Avro data
+bq load --source_format=AVRO [DATASET].[TABLE] [SOURCE_FILE]
+
+# Load Parquet data
+bq load --source_format=PARQUET [DATASET].[TABLE] [SOURCE_FILE]
+
+# Load data with write disposition (overwrite)
+bq load --replace [DATASET].[TABLE] [SOURCE_FILE] [SCHEMA]
+
+# Load data with write disposition (append)
+bq load --noreplace [DATASET].[TABLE] [SOURCE_FILE] [SCHEMA]
+
+# Load data with partitioning
+bq load --time_partitioning_field=[FIELD] \
+  [DATASET].[TABLE] [SOURCE_FILE] [SCHEMA]
+
+# Skip leading rows (header)
+bq load --skip_leading_rows=1 [DATASET].[TABLE] [SOURCE_FILE]
+```
+
+### Data Extraction
+```bash
+# Extract table to Cloud Storage (CSV)
+bq extract [DATASET].[TABLE] gs://[BUCKET]/[FILE]
+
+# Extract table to Cloud Storage (JSON)
+bq extract --destination_format=NEWLINE_DELIMITED_JSON \
+  [DATASET].[TABLE] gs://[BUCKET]/[FILE]
+
+# Extract table to Cloud Storage (Avro)
+bq extract --destination_format=AVRO \
+  [DATASET].[TABLE] gs://[BUCKET]/[FILE]
+
+# Extract with compression
+bq extract --compression=GZIP \
+  [DATASET].[TABLE] gs://[BUCKET]/[FILE].gz
+
+# Extract specific fields
+bq extract --field_delimiter="," --print_header=true \
+  [DATASET].[TABLE] gs://[BUCKET]/[FILE]
+```
+
+### Jobs Management
+```bash
+# List jobs
+bq ls -j
+
+# List jobs with limit
+bq ls -j -n [MAX_RESULTS]
+
+# Show job information
+bq show -j [JOB_ID]
+
+# Cancel a job
+bq cancel [JOB_ID]
+
+# Wait for a job to complete
+bq wait [JOB_ID]
+
+# List jobs by state
+bq ls -j --min_creation_time=[TIMESTAMP]
+```
+
+### Views & Materialized Views
+```bash
+# Create a view
+bq mk --view="[SQL_QUERY]" [DATASET].[VIEW_NAME]
+
+# Update a view
+bq update --view="[SQL_QUERY]" [DATASET].[VIEW_NAME]
+
+# Create a materialized view
+bq mk --materialized_view="[SQL_QUERY]" \
+  [DATASET].[MATERIALIZED_VIEW_NAME]
+
+# Refresh a materialized view
+bq query --use_legacy_sql=false \
+  "CALL BQ.REFRESH_MATERIALIZED_VIEW('[DATASET].[VIEW_NAME]')"
+```
+
+### Access Control
+```bash
+# Grant dataset access to user
+bq update --set_iam_policy=[POLICY_FILE] [DATASET]
+
+# Get dataset IAM policy
+bq show --format=prettyjson [DATASET]
+
+# Grant table access
+bq update --destination_kms_key=[KEY] [DATASET].[TABLE]
+```
+
+### Partitioning & Clustering
+```bash
+# Create partitioned table by date
+bq mk --table --time_partitioning_field=[DATE_FIELD] \
+  --time_partitioning_type=DAY \
+  [DATASET].[TABLE] [SCHEMA]
+
+# Create clustered table
+bq mk --table --clustering_fields=[FIELD1,FIELD2] \
+  [DATASET].[TABLE] [SCHEMA]
+
+# Create partitioned and clustered table
+bq mk --table \
+  --time_partitioning_field=[DATE_FIELD] \
+  --clustering_fields=[FIELD1,FIELD2] \
+  [DATASET].[TABLE] [SCHEMA]
+
+# Query a partitioned table
+bq query "SELECT * FROM [DATASET].[TABLE] \
+  WHERE [DATE_FIELD] BETWEEN '[START_DATE]' AND '[END_DATE]'"
+```
+
+### Transfer Service
+```bash
+# List transfer configurations (using gcloud)
+gcloud transfer jobs list
+
+# Create a transfer job (using gcloud)
+gcloud transfer jobs create gs://[SOURCE] gs://[DEST]
+
+# Describe a transfer job (using gcloud)
+gcloud transfer jobs describe [JOB_NAME]
+```
+
+### Monitoring & Cost
+```bash
+# Show information about last query
+bq show -j [JOB_ID]
+
+# Estimate query cost with dry run
+bq query --dry_run --format=prettyjson "[SQL_QUERY]"
+
+# Show table size
+bq show --format=prettyjson [DATASET].[TABLE]
+
+# List all tables with size
+bq ls --format=pretty [DATASET]
 ```
 
 ---
