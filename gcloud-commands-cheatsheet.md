@@ -779,14 +779,17 @@ bq query --use_legacy_sql=false \
 
 ### Access Control
 ```bash
-# Grant dataset access to user
-bq update --set_iam_policy=[POLICY_FILE] [DATASET]
-
 # Get dataset IAM policy
 bq show --format=prettyjson [DATASET]
 
-# Grant table access
+# Set table encryption with KMS key
 bq update --destination_kms_key=[KEY] [DATASET].[TABLE]
+
+# Grant dataset access using gcloud
+gcloud projects add-iam-policy-binding [PROJECT_ID] \
+  --member=[MEMBER] \
+  --role=roles/bigquery.dataViewer \
+  --condition=None
 ```
 
 ### Partitioning & Clustering
@@ -811,16 +814,23 @@ bq query "SELECT * FROM [DATASET].[TABLE] \
   WHERE [DATE_FIELD] BETWEEN '[START_DATE]' AND '[END_DATE]'"
 ```
 
-### Transfer Service
+### Data Transfer Service
 ```bash
-# List transfer configurations (using gcloud)
-gcloud transfer jobs list
+# List data transfer configurations
+bq ls --transfer_config --transfer_location=[LOCATION]
 
-# Create a transfer job (using gcloud)
-gcloud transfer jobs create gs://[SOURCE] gs://[DEST]
+# Show transfer configuration details
+bq show --transfer_config [CONFIG_ID]
 
-# Describe a transfer job (using gcloud)
-gcloud transfer jobs describe [JOB_NAME]
+# Create a scheduled query
+bq mk --transfer_config \
+  --data_source=scheduled_query \
+  --target_dataset=[DATASET] \
+  --display_name="[NAME]" \
+  --params='{"query":"[SQL_QUERY]","destination_table_name_template":"[TABLE]","write_disposition":"WRITE_APPEND"}'
+
+# Run a transfer immediately
+bq mk --transfer_run --run_time=[TIMESTAMP] [CONFIG_ID]
 ```
 
 ### Monitoring & Cost
