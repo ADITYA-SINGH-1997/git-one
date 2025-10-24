@@ -415,12 +415,15 @@ gcloud app services set-traffic [SERVICE] \
 # List instances
 gcloud sql instances list
 
-# Create a MySQL instance
+# List available database versions
+gcloud sql database-versions list
+
+# Create a MySQL instance (use MYSQL_8_0, MYSQL_5_7, etc.)
 gcloud sql instances create [INSTANCE_NAME] \
   --database-version=MYSQL_8_0 \
   --tier=[TIER] --region=[REGION]
 
-# Create a PostgreSQL instance
+# Create a PostgreSQL instance (use POSTGRES_14, POSTGRES_13, etc.)
 gcloud sql instances create [INSTANCE_NAME] \
   --database-version=POSTGRES_14 \
   --tier=[TIER] --region=[REGION]
@@ -605,18 +608,21 @@ gcloud config get-value project
 
 ### Billing
 ```bash
-# List billing accounts
+# List billing accounts (beta - check for GA status)
 gcloud beta billing accounts list
 
-# Link project to billing account
+# Link project to billing account (beta - check for GA status)
 gcloud beta billing projects link [PROJECT_ID] \
   --billing-account=[ACCOUNT_ID]
 
-# Unlink project from billing
+# Unlink project from billing (beta - check for GA status)
 gcloud beta billing projects unlink [PROJECT_ID]
 
-# Get project billing info
+# Get project billing info (beta - check for GA status)
 gcloud beta billing projects describe [PROJECT_ID]
+
+# Note: Billing commands are in beta. Check if promoted to GA with:
+# gcloud billing --help
 ```
 
 ---
@@ -660,11 +666,16 @@ gcloud monitoring metrics-descriptors list
 # List time series
 gcloud monitoring time-series list
 
-# Create an alert policy
+# Create an alert policy (alpha - experimental, may change)
 gcloud alpha monitoring policies create --policy-from-file=[FILE]
 
-# List alert policies
+# List alert policies (alpha - experimental, may change)
 gcloud alpha monitoring policies list
+
+# Note: Alert policy commands are in alpha. For production use, consider:
+# - Using Cloud Console for alert policy management
+# - Using Terraform or other IaC tools
+# - Checking if promoted to beta/GA with: gcloud monitoring --help
 ```
 
 ---
