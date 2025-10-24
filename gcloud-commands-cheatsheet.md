@@ -788,8 +788,7 @@ bq update --destination_kms_key=[KEY] [DATASET].[TABLE]
 # Grant dataset access using gcloud
 gcloud projects add-iam-policy-binding [PROJECT_ID] \
   --member=[MEMBER] \
-  --role=roles/bigquery.dataViewer \
-  --condition=None
+  --role=roles/bigquery.dataViewer
 ```
 
 ### Partitioning & Clustering
