@@ -418,7 +418,7 @@ gcloud sql instances list
 # List available database versions
 gcloud sql database-versions list
 
-# Create a MySQL instance (use MYSQL_8_0, MYSQL_5_7, etc.)
+# Create a MySQL instance (use MYSQL_8_0, MYSQL_8_4, etc.)
 gcloud sql instances create [INSTANCE_NAME] \
   --database-version=MYSQL_8_0 \
   --tier=[TIER] --region=[REGION]
