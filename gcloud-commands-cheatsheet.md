@@ -423,7 +423,7 @@ gcloud sql instances create [INSTANCE_NAME] \
   --database-version=MYSQL_8_0 \
   --tier=[TIER] --region=[REGION]
 
-# Create a PostgreSQL instance (use POSTGRES_14, POSTGRES_13, etc.)
+# Create a PostgreSQL instance (use POSTGRES_14, POSTGRES_15, POSTGRES_16, etc.)
 gcloud sql instances create [INSTANCE_NAME] \
   --database-version=POSTGRES_14 \
   --tier=[TIER] --region=[REGION]
